@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.17.0/vis.min.css">
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/vis/4.17.0/vis.min.js'></script>
+    <style>
+        #bstree {
+            width: 700px;
+            height: 500px;
+            border: 1px solid lightgray;
+        }
+    </style>
+</head>
+
+<body class="container" style="margin-top: 10%;">
+    <div class="col-xs-3">
+        <input type="number" class="form-control" style="display: inline;" onkeypress="keyDownHandler(event)" id="createTree">
+        <button class="btn btn-info" style="margin-top: 2%;" onclick="handle(this);">createTree</button>
+    </div>
+    <div class="col-xs-3">
+        <input type="number" class="form-control" style="display: inline;" onkeypress="keyDownHandler(event)" id="insert">
+        <button class="btn btn-primary" style="margin-top: 2%;" onclick="handle(this);">insert</button>
+    </div>
+    <div class="col-xs-3">
+        <input type="number" class="form-control" style="display: inline;" onkeypress="keyDownHandler(event)" disabled>
+        <button class="btn btn-warning" style="margin-top: 2%;" onclick="handle(this);">removeLowest</button>
+    </div>
+    <div class="col-xs-3">
+        <input type="number" class="form-control" style="display: inline;" onkeypress="keyDownHandler(event)" id="delete">
+        <button class="btn btn-danger" style="margin-top: 2%;" onclick="handle(this);">delete</button>
+    </div>
+    <div class="col-xs-12">
+        <p>Output-></p>
+    </div>
+    <div class="col-xs-12">
+        <div id="bstree"></div>
+    </div>
+    <script src='bstree.js'></script>
+    <script>
+        var tree = new BSTree();
+        var nodes = new vis.DataSet(tree.nodes);
+        var edges = new vis.DataSet(tree.edges);
+        var container = document.getElementById('bstree');
+        var data = {
+            nodes: nodes,
+            edges: edges
+        };
+        var options = {
+            layout: {
+                hierarchical: {
+                    sortMethod: 'directed',
+                    enabled: true
+                }
+            }
+        }
+        var network = new vis.Network(container, data, options);
+
+        function handle(obj) {
+            var x = obj;
+            if (obj.innerHTML)
+                x = obj.innerHTML;
+            switch (x) {
+                case 'insert':
+                    var input = parseInt(document.getElementById('insert').value);
+                    if (typeof input !== 'number' || !input)
+                        return;
+                    tree.insert(input);
+                    break;
+                case 'removeLowest':
+                    tree.removeLowestValue();
+                    break;
+                case 'delete':
+                    var input = parseInt(document.getElementById('delete').value);
+                    if (typeof input !== 'number' || !input)
+                        return;
+                    tree.remove(input);
+                    break;
+                default:
+                    var input = parseInt(document.getElementById('createTree').value);
+                    if (typeof input !== 'number' || !input)
+                        return;
+                    tree.createTree(input);
+                    break;
+            }
+            render();
+        }
+
+        function render() {
+            var x = tree.traverse(tree.head, false);
+            var out = document.getElementsByTagName('p')[0];
+            out.innerHTML = 'Output -> ' + JSON.stringify(x);
+            document.getElementById('insert').value = '';
+            document.getElementById('delete').value = '';
+            document.getElementById('createTree').value = '';
+            nodes.clear();
+            edges.clear();
+            nodes.add(tree.nodes);
+            edges.add(tree.edges);
+            network.fit();
+        }
+
+        function keyDownHandler(obj) {
+            if (obj.which === 13 || obj.keyCode === 13)
+                handle(obj.target.id);
+            return;
+        }
+    </script>
+</body>
+
+</html>
