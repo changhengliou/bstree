@@ -35,7 +35,7 @@
         <button class="btn btn-danger" style="margin-top: 2%;" onclick="handle(this);">delete</button>
     </div>
     <div class="col-xs-12">
-        <p>Output-></p>
+        <p>Increasing Order -> </p>
     </div>
     <div class="col-xs-12">
         <div id="bstree"></div>
@@ -92,8 +92,10 @@
 
         function render() {
             var x = tree.traverse(tree.head, false);
+            tree.printIncreasingOrder(tree.head);
             var out = document.getElementsByTagName('p')[0];
-            out.innerHTML = 'Output -> ' + JSON.stringify(x);
+            out.innerHTML = 'Increasing Order -> ' + JSON.stringify(tree.increasingOrder);
+            tree.increasingOrder = [];
             document.getElementById('insert').value = '';
             document.getElementById('delete').value = '';
             document.getElementById('createTree').value = '';

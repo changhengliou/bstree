@@ -3,6 +3,7 @@ function BSTree() {
     this.count = 1;
     this.edges = [];
     this.nodes = [];
+    this.increasingOrder = [];
     this.createTree = function (initKey) {
         this.head = new Node(initKey);
     }
@@ -150,7 +151,7 @@ function BSTree() {
         if (!ptr) 
             return;
         this.printIncreasingOrder(ptr.left);
-        console.log(ptr.key);
+        console.log(ptr.key);this.increasingOrder.push(ptr.key);
         this.printIncreasingOrder(ptr.right);
     }
 
